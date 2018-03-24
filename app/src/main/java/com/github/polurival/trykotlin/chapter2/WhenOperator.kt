@@ -3,11 +3,18 @@ package com.github.polurival.trykotlin.chapter2
 import com.github.polurival.trykotlin.chapter2.Color.*
 
 /**
+ * Котлин в действии, часть 2
+ *
  * @author Польщиков Юрий.
  */
+
 fun main(args: Array<String>) {
     println(mix(BLUE, YELLOW))
     println(mixOptimized(BLUE, YELLOW))
+    println(evalJavaIf(Sum(Sum(Num(1), Num(2)), Num(4))))
+    println(evalKotlinIf(Sum(Num(1), Num(2))))
+    println(evalWhen(Sum(Num(1), Num(3))))
+    println(evalWithLogging(Sum(Sum(Num(1), Num(2)), Num(4))))
 }
 
 /**
@@ -41,16 +48,54 @@ fun mixOptimized(c1: Color, c2: Color) {
  * 2.3.5 Автоматическое приведение типов: совмещения проверки и приведения типа
  */
 interface Expr
-class Num(val value: Int): Expr
+
+class Num(val value: Int) : Expr
 class Sum(val left: Expr, val right: Expr) : Expr
 
-fun eval(e: Expr): Int {
+fun evalJavaIf(e: Expr): Int {
     if (e is Num) {
         val n = e as Num
         return n.value
     }
     if (e is Sum) {
-        return eval(e.right as Sum) + eval((e.left))
+        return evalJavaIf(e.right) + evalJavaIf((e.left)) // smart cast
     }
     throw IllegalArgumentException("Unknown expression")
 }
+
+fun evalKotlinIf(e: Expr): Int =
+        if (e is Num) {
+            e.value
+        } else if (e is Sum) {
+            evalKotlinIf(e.right) + evalKotlinIf(e.left)
+        } else {
+            throw IllegalArgumentException("Unknown expression")
+        }
+
+fun evalWhen(e: Expr): Int =
+        when (e) {
+            is Num ->
+                e.value
+            is Sum ->
+                evalWhen(e.left) + evalWhen(e.right)
+            else ->
+                throw IllegalArgumentException("Unknown expression")
+        }
+
+/**
+ * 2.3.7 Блоки в выражениях if и when
+ */
+fun evalWithLogging(e: Expr): Int =
+        when (e) {
+            is Num -> {
+                println("num ${e.value}")
+                e.value
+            }
+            is Sum -> {
+                val left = evalWithLogging(e.left)
+                val right = evalWithLogging(e.right)
+                println("sum: $left + $right")
+                left + right
+            }
+            else -> throw IllegalArgumentException("Unknown expression")
+        }
