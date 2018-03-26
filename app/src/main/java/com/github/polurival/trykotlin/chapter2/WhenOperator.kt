@@ -1,6 +1,7 @@
 package com.github.polurival.trykotlin.chapter2
 
 import com.github.polurival.trykotlin.chapter2.Color.*
+import com.github.polurival.trykotlin.chapter3.lastChar as last
 
 /**
  * Котлин в действии, часть 2
@@ -15,6 +16,8 @@ fun main(args: Array<String>) {
     println(evalKotlinIf(Sum(Num(1), Num(2))))
     println(evalWhen(Sum(Num(1), Num(3))))
     println(evalWithLogging(Sum(Sum(Num(1), Num(2)), Num(4))))
+
+    println("Kotlin".last())
 }
 
 /**

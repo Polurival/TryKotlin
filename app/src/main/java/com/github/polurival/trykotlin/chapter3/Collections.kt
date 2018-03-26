@@ -45,11 +45,14 @@ fun <T> joinToString(
     }
     result.append(postfix)
     return result.toString()
+
+    println("Kotlin".lastChar())
 }
 
 /**
  * 3.2 toString для Collection с параметрами по умолчанию
  */
+@JvmOverloads
 fun <T> joinToStringWithDefaults(
         collection: Collection<T>,
         separator: String = ", ",
@@ -66,3 +69,21 @@ fun <T> joinToStringWithDefaults(
     result.append(postfix)
     return result.toString()
 }
+
+var opCount = 0 // будет храниться в статическом поле
+
+fun performOperation() {
+    opCount++
+}
+
+fun reportOperationCount() {
+    println("Operation performed $opCount times")
+}
+
+const val UNIX_LINE_SEPARATOR = "\n" // статическая константа
+
+/**
+ * 3.3 Добавление методов в сторонние классы:
+ * функции-расширения и свойства-расширения
+ */
+fun String.lastChar(): Char = this.get(this.length - 1) // можно опустить this, get(length - 1)
