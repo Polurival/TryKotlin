@@ -18,5 +18,10 @@ public class JavaClass {
         System.out.println(StringFunctions.UNIX_LINE_SEPARATOR);
 
         System.out.println(StringFunctions.lastChar("Kotlin"));
+
+        View view = new Button();
+        StringFunctions.showOff(view); // I'm a view!
+
+        System.out.println(StringFunctions.getLastChar("Java"));
     }
 }

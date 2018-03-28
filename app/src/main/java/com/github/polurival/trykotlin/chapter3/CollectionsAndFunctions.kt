@@ -25,6 +25,25 @@ fun main(args: Array<String>) {
 
     //@JvmOverloads - если функцию с параметрами по умолчанию надо вызвать из java класса,
     // использовать даннубю аннотацию для создания перегруженных java-методов с параметрами по умолчанию
+
+    println("Kotlin".lastChar())
+
+    println(list.joinToStringAsExtension(separator = "; ", prefix = "(", postfix = ")"))
+    println(list.joinToStringAsExtension(" "))
+
+    println(listOf("one", "two", "eight").join(" "))
+    // println(listOf(1, 2, 8).join()) - нельзя, так как допустимы только строки
+
+    val view: View = Button()
+    view.click() // Button clicked
+
+    view.showOff() // I'm a view!
+
+    println("Kotlin".lastChar)
+
+    val sb = StringBuilder("Kotlin?")
+    sb.lastChar = '!'
+    println(sb)
 }
 
 /**
@@ -45,8 +64,6 @@ fun <T> joinToString(
     }
     result.append(postfix)
     return result.toString()
-
-    println("Kotlin".lastChar())
 }
 
 /**
@@ -87,3 +104,62 @@ const val UNIX_LINE_SEPARATOR = "\n" // статическая констант�
  * функции-расширения и свойства-расширения
  */
 fun String.lastChar(): Char = this.get(this.length - 1) // можно опустить this, get(length - 1)
+
+/**
+ * 3.4 joinToString как расширение
+ */
+fun <T> Collection<T>.joinToStringAsExtension(
+        separator: String = ", ",
+        prefix: String = "",
+        postfix: String = ""
+): String {
+    val result = StringBuilder(prefix)
+    for ((index, element) in this.withIndex()) {
+        if (index > 0) {
+            result.append(separator)
+        }
+        result.append(element)
+    }
+    result.append(postfix)
+    return result.toString()
+}
+
+/**
+ * только для строк
+ */
+fun Collection<String>.join(
+        separator: String = ", ",
+        prefix: String = "",
+        postfix: String = ""
+) = joinToStringAsExtension(separator, prefix, postfix)
+
+/**
+ * Переопределение функции-члена класса
+ */
+open class View {
+    open fun click() = println("View clicked")
+}
+
+class Button : View() {
+    override fun click() = println("Button clicked")
+}
+
+/**
+ * Функции расширения не переопределяются
+ */
+fun View.showOff() = println("I'm a view!")
+
+fun Button.showOff() = println("I'm a button!")
+
+/**
+ * 3.3.5 Свойства-расширения. 3.7 Объявление:
+ */
+val String.lastChar: Char
+    get() = get(length - 1)
+
+/**
+ * 3.8 Объявление изменяемого свойства-расширения
+ */
+var StringBuilder.lastChar: Char
+    get() = get(length - 1) // метод чтения для свойства
+    set(value) = setCharAt(length - 1, value) // метод записи для свойства
