@@ -48,3 +48,42 @@ data class Client2(val name: String, val postalCode: Int)
 
 
 // 4.3.3 Делегирование в классах. Ключевое слово by
+/**
+ * Недостаток паттерна декоратор - большой объем шаблонного кода
+ */
+class DelegatingCollection<T> : Collection<T> {
+    private val innerList = arrayListOf<T>()
+
+    override val size: Int get() = innerList.size
+    override fun contains(element: T): Boolean = innerList.contains(element)
+    override fun containsAll(elements: Collection<T>): Boolean = innerList.containsAll(elements)
+    override fun isEmpty(): Boolean = innerList.isEmpty()
+    override fun iterator(): Iterator<T> = innerList.iterator()
+}
+
+/**
+ * Ключевое слово by генерирует реализацию методов интерфейса
+ */
+class DelegatingCollectionBy<T>(
+        innerList: Collection<T> = ArrayList()
+) : Collection<T> by innerList
+
+/**
+ * Листинг 4.22 Делегирование реализации объекту innerSet с собственной реализацией некоторых методов
+ */
+class CountingSet<T>(
+        val innerSet: MutableCollection<T> = HashSet()
+) : MutableCollection<T> by innerSet {
+
+    var objectAdded = 0
+
+    override fun add(element: T): Boolean {
+        objectAdded++
+        return innerSet.add(element)
+    }
+
+    override fun addAll(elements: Collection<T>): Boolean {
+        objectAdded += elements.size
+        return innerSet.addAll(elements)
+    }
+}
